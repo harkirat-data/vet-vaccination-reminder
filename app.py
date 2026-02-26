@@ -6,7 +6,7 @@ import re
 
 st.set_page_config(page_title="Vet Reminders", layout="centered")
 
-st.title("🐾 Vaccine Reminder System")
+st.title("🐾 PawsInn App Reminder")
 
 # Session state initialize
 if "logged_in" not in st.session_state:
