@@ -8,18 +8,37 @@ st.set_page_config(page_title="Vet Reminders", layout="centered")
 
 st.title("🐾 PawsInn App Reminder")
 
-# Session state initialize
+# ---------------- SESSION STATE ----------------
 if "logged_in" not in st.session_state:
     st.session_state.logged_in = False
 
+if "clinic_name" not in st.session_state:
+    st.session_state.clinic_name = ""
+
+# ---------------- FILE UPLOAD ----------------
 uploaded_file = st.file_uploader("Upload Excel File", type="xlsx")
 
 if uploaded_file:
 
-    df_reminders = pd.read_excel(uploaded_file, sheet_name=0)
-    df_users = pd.read_excel(uploaded_file, sheet_name=1)
+    try:
+        df_reminders = pd.read_excel(uploaded_file, sheet_name=0)
+        df_users = pd.read_excel(uploaded_file, sheet_name=1)
+    except Exception:
+        st.error("Excel file must contain at least 2 sheets.")
+        st.stop()
 
-    # ---------- LOGIN SECTION ----------
+    # 🔥 CLEAN COLUMN NAMES (Fix mobile bug)
+    df_reminders.columns = df_reminders.columns.str.strip().str.lower()
+    df_users.columns = df_users.columns.str.strip().str.lower()
+
+    # ---------------- VALIDATE USER SHEET ----------------
+    required_user_cols = {"username", "password", "expiry date", "clinic name"}
+
+    if not required_user_cols.issubset(df_users.columns):
+        st.error("Sheet2 format incorrect. Required columns: username, password, expiry date, clinic name")
+        st.stop()
+
+    # ---------------- LOGIN SECTION ----------------
     if not st.session_state.logged_in:
 
         st.subheader("🔐 Clinic Login")
@@ -29,61 +48,74 @@ if uploaded_file:
 
         if st.button("Login"):
 
+            # Convert to string & strip spaces (extra safety)
+            df_users["username"] = df_users["username"].astype(str).str.strip()
+            df_users["password"] = df_users["password"].astype(str).str.strip()
+
             user_row = df_users[
-                (df_users['username'] == username_input) &
-                (df_users['password'] == password_input)
+                (df_users["username"] == username_input.strip()) &
+                (df_users["password"] == password_input.strip())
             ]
 
             if user_row.empty:
                 st.error("Invalid username or password")
             else:
                 expiry_date = pd.to_datetime(
-                    user_row.iloc[0]['expiry date']
+                    user_row.iloc[0]["expiry date"],
+                    errors="coerce"
                 ).date()
 
-                clinic_name = user_row.iloc[0]['clinic name']
+                clinic_name = user_row.iloc[0]["clinic name"]
                 today = datetime.date.today()
 
-                if today > expiry_date:
+                if pd.isna(expiry_date):
+                    st.error("Invalid expiry date format in Sheet2.")
+                elif today > expiry_date:
                     st.error("Subscription expired.")
                 else:
                     st.session_state.logged_in = True
                     st.session_state.clinic_name = clinic_name
                     st.rerun()
 
-    # ---------- AFTER LOGIN ----------
+    # ---------------- AFTER LOGIN ----------------
     if st.session_state.logged_in:
 
         st.success(f"Welcome {st.session_state.clinic_name} ✅")
 
-        # Optional Logout Button
         if st.button("Logout"):
             st.session_state.logged_in = False
             st.rerun()
 
+        # Validate reminder sheet columns
+        required_reminder_cols = {"phone", "pet name", "owner name", "vaccine type", "due date"}
+
+        if not required_reminder_cols.issubset(df_reminders.columns):
+            st.error("Sheet1 format incorrect. Please check reminder columns.")
+            st.stop()
+
         today = datetime.date.today()
 
-        df_reminders['due date'] = pd.to_datetime(
-            df_reminders['due date'],
-            errors='coerce'
+        df_reminders["due date"] = pd.to_datetime(
+            df_reminders["due date"],
+            errors="coerce"
         ).dt.date
 
-        df_today = df_reminders[df_reminders['due date'] == today]
+        df_today = df_reminders[df_reminders["due date"] == today]
 
         st.subheader("📋 Today's Reminders")
 
         if df_today.empty:
             st.info("No vaccinations due today.")
         else:
-            for index, row in df_today.iterrows():
+            for _, row in df_today.iterrows():
 
-                phone = re.sub(r'\D', '', str(row['phone']))
+                phone = re.sub(r"\D", "", str(row["phone"]))
                 if not phone.startswith("91"):
                     phone = "91" + phone
 
-                pet = row['pet name']
-                owner = row['owner name']
-                vaccine = row['vaccine type']
+                pet = row["pet name"]
+                owner = row["owner name"]
+                vaccine = row["vaccine type"]
 
                 message = f"Hi {owner}, this is a reminder that {pet} is due for a {vaccine} today."
                 encoded_msg = urllib.parse.quote(message)
