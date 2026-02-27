@@ -4,7 +4,7 @@ import urllib.parse
 import datetime
 import re
 
-st.set_page_config(page_title="Vet Reminders",page_icon="🐾", layout="centered")
+st.set_page_config(page_title="Vet Reminders",page_icon="logo.png", layout="centered")
 # 🔥 Background styling
 st.markdown(
     """
