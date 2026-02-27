@@ -43,7 +43,7 @@ if uploaded_file:
         st.error("Excel file must contain at least 2 sheets.")
         st.stop()
 
-    # 🔥 CLEAN COLUMN NAMES (Fix mobile bug)
+    # CLEAN COLUMN NAMES (Fix mobile bug)
     df_reminders.columns = df_reminders.columns.str.strip().str.lower()
     df_users.columns = df_users.columns.str.strip().str.lower()
 
