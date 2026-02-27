@@ -4,7 +4,23 @@ import urllib.parse
 import datetime
 import re
 
-st.set_page_config(page_title="Vet Reminders", layout="centered")
+st.set_page_config(page_title="Vet Reminders",page_icon="🐾", layout="centered")
+# 🔥 Background styling
+st.markdown(
+    """
+    <style>
+    .stApp {
+        background-color: #111827;
+    }
+    </style>
+    """,
+    unsafe_allow_html=True
+)
+
+# 🔥 Centered Logo
+col1, col2, col3 = st.columns([1,2,1])
+with col2:
+    st.image("logo.png", width=180)
 
 st.title("🐾 PawsInn App Reminder")
 
