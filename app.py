@@ -30,26 +30,23 @@ if uploaded_file:
             st.error("Excel file must contain at least 2 sheets.")
             st.stop()
 # -------- Load Sheet2 (Optional & Blank Safe) --------
-df_users = None
-login_enabled = False
+            df_users = None
+            login_enabled = False
 
-if len(excel_file.sheet_names) > 1:
-    df_users = pd.read_excel(excel_file, sheet_name=1)
+            if len(excel_file.sheet_names) > 1:
+                df_users = pd.read_excel(excel_file, sheet_name=1)
 
     # If sheet2 completely blank
-    if df_users.empty or df_users.shape[1] == 0:
-        st.warning("Sheet2 is blank. Login disabled.")
-        login_enabled = False
-    else:
-        df_users.columns = df_users.columns.astype(str).str.strip().str.lower()
+                if df_users.empty or df_users.shape[1] == 0:
+                    st.warning("Sheet2 is blank. Login disabled.")
+                    login_enabled = False
+                else:
+                    df_users.columns = df_users.columns.astype(str).str.strip().str.lower()
+                    required_user_cols = {"username", "password", "expiry date", "clinic name"}
+                    login_enabled = required_user_cols.issubset(df_users.columns)
 
-        required_user_cols = {"username", "password", "expiry date", "clinic name"}
-        login_enabled = required_user_cols.issubset(df_users.columns)
-
-        if not login_enabled:
-            st.warning("Sheet2 format incorrect. Login disabled.")
-        if not login_enabled:
-            st.session_state.logged_in = True
+            if not login_enabled:
+                st.session_state.logged_in = True
 
         # CLEAN COLUMN NAMES (Fix mobile bug)
         df_reminders.columns = df_reminders.columns.str.strip().str.lower()
