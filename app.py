@@ -6,7 +6,8 @@ import re
 
 st.set_page_config(page_title="Vet Reminders",page_icon="🐾", layout="centered")
 
-st.title("🐾 PawsInn App Reminder")
+st.title("🐾 PawsInn App ")
+st.subheader("Reminder Alert")
 
 # ---------------- SESSION STATE ----------------
 if "logged_in" not in st.session_state:
@@ -34,9 +35,11 @@ if uploaded_file:
     # ---------------- VALIDATE USER SHEET ----------------
     required_user_cols = {"username", "password", "expiry date", "clinic name"}
 
-    if not required_user_cols.issubset(df_users.columns):
-        st.error("Sheet2 format incorrect. Required columns: username, password, expiry date, clinic name")
-        st.stop()
+    login_enabled = required_user_cols.issubset(df_users.columns)
+
+    if not login_enabled:
+        st.warning("Login system disabled (Sheet2 format not found).")
+        st.session_state.logged_in = True
 
     # ---------------- LOGIN SECTION ----------------
     if not st.session_state.logged_in:
