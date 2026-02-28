@@ -1,27 +1,27 @@
-    import streamlit as st
-    import pandas as pd
-    import urllib.parse
-    import datetime
-    import re
+import streamlit as st
+import pandas as pd
+import urllib.parse
+import datetime
+import re
 
-    st.set_page_config(page_title="Vet Reminders",page_icon="🐾", layout="centered")
-    st.markdown(
+st.set_page_config(page_title="Vet Reminders",page_icon="🐾", layout="centered")
+st.markdown(
         "<h1 style='text-align:center; color:#f97316;'>🐾 PawsInn App</h1>",
         unsafe_allow_html=True
     )
-    st.subheader("Reminder Alert",text_alignment="center")
+st.subheader("Reminder Alert",text_alignment="center")
 
     # ---------------- SESSION STATE ----------------
-    if "logged_in" not in st.session_state:
+if "logged_in" not in st.session_state:
         st.session_state.logged_in = False
 
-    if "clinic_name" not in st.session_state:
+if "clinic_name" not in st.session_state:
         st.session_state.clinic_name = ""
 
     # ---------------- FILE UPLOAD ----------------
-    uploaded_file = st.file_uploader("Upload Excel File", type="xlsx")
+uploaded_file = st.file_uploader("Upload Excel File", type="xlsx")
 
-    if uploaded_file:
+if uploaded_file:
 
         try:
             df_reminders = pd.read_excel(uploaded_file, sheet_name=0)
