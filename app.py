@@ -40,7 +40,7 @@ if uploaded_file:
         df_users = pd.read_excel(excel_file, sheet_name=1)
 
         if df_users.empty or df_users.shape[1] == 0:
-            st.warning("Sheet2 is blank. Login disabled.")
+            st.warning("Login detail not found!")
             login_enabled = False
         else:
             df_users.columns = df_users.columns.map(str)
