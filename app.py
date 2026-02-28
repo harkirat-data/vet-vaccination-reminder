@@ -51,11 +51,15 @@ if uploaded_file:
             if required_user_cols.issubset(df_users.columns):
                 login_enabled = True
             else:
-                st.warning("Sheet2 format incorrect. Login disabled.")
+                st.warning("Login detail not found! Login disabled.")
                 login_enabled = False
     else:
         st.warning("Login detail not found!")
         login_enabled = False
+
+    if not login_enabled:
+        st.error("Login detail not found. App cannot proceed.")
+        st.stop()
 
     # ---------------- LOGIN SECTION ----------------
     if login_enabled and not st.session_state.logged_in:
