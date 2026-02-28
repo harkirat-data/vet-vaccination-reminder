@@ -58,7 +58,8 @@ if uploaded_file:
         login_enabled = False
 
     if not login_enabled:
-        st.session_state.logged_in = True
+        st.error("Valid Sheet2 not found. App cannot proceed.")
+        st.stop()
 
     # ---------------- LOGIN SECTION ----------------
     if login_enabled and not st.session_state.logged_in:
