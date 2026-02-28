@@ -6,8 +6,8 @@ import re
 
 st.set_page_config(page_title="Vet Reminders",page_icon="🐾", layout="centered")
 
-st.title("🐾 PawsInn App ")
-st.subheader("Reminder Alert")
+st.title("🐾 PawsInn App ",text_alignment="center")
+st.subheader("Reminder Alert",text_alignment="center")
 
 # ---------------- SESSION STATE ----------------
 if "logged_in" not in st.session_state:
