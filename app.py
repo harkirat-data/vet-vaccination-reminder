@@ -54,12 +54,8 @@ if uploaded_file:
                 st.warning("Sheet2 format incorrect. Login disabled.")
                 login_enabled = False
     else:
-        st.warning("Sheet2 not found. Login disabled.")
+        st.warning("Login detail not found!")
         login_enabled = False
-
-    if not login_enabled:
-        st.error("Valid Sheet2 not found. App cannot proceed.")
-        st.stop()
 
     # ---------------- LOGIN SECTION ----------------
     if login_enabled and not st.session_state.logged_in:
