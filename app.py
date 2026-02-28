@@ -5,8 +5,10 @@ import datetime
 import re
 
 st.set_page_config(page_title="Vet Reminders",page_icon="🐾", layout="centered")
-
-st.title("🐾 PawsInn App ",text_alignment="center")
+st.markdown(
+    "<h1 style='text-align:center; color:#f97316;'>🐾 PawsInn App</h1>",
+    unsafe_allow_html=True
+)
 st.subheader("Reminder Alert",text_alignment="center")
 
 # ---------------- SESSION STATE ----------------
