@@ -29,7 +29,7 @@ if uploaded_file:
     # -------- Load Sheet1 (Required) --------
     df_reminders = pd.read_excel(excel_file, sheet_name=0)
     df_reminders.columns = df_reminders.columns.map(str)
-    df_reminders.columns = df_reminders.columns.str.strip().str.lower()
+    df_reminders.columns = df_reminders.columns.str.strip()
 
     # -------- Load Sheet2 (Optional & Safe) --------
     df_users = None
@@ -44,9 +44,9 @@ if uploaded_file:
             login_enabled = False
         else:
             df_users.columns = df_users.columns.map(str)
-            df_users.columns = df_users.columns.str.strip().str.lower()
+            df_users.columns = df_users.columns.str.strip()
 
-            required_user_cols = {"username", "password", "expiry date", "clinic name"}
+            required_user_cols = {"UserName", "Password", "Expiry", "ClinicName"}
 
             if required_user_cols.issubset(df_users.columns):
                 login_enabled = True
@@ -66,28 +66,28 @@ if uploaded_file:
 
         st.subheader("🔐 Clinic Login")
 
-        username_input = st.text_input("Username")
+        username_input = st.text_input("UserName")
         password_input = st.text_input("Password", type="password")
 
         if st.button("Login"):
 
-            df_users["username"] = df_users["username"].astype(str).str.strip()
-            df_users["password"] = df_users["password"].astype(str).str.strip()
+            df_users["UserName"] = df_users["UserName"].astype(str).str.strip()
+            df_users["Password"] = df_users["Password"].astype(str).str.strip()
 
             user_row = df_users[
-                (df_users["username"] == username_input.strip()) &
-                (df_users["password"] == password_input.strip())
+                (df_users["UserName"] == username_input.strip()) &
+                (df_users["Password"] == password_input.strip())
             ]
 
             if user_row.empty:
                 st.error("Invalid username or password")
             else:
                 expiry_date = pd.to_datetime(
-                    user_row.iloc[0]["expiry date"],
+                    user_row.iloc[0]["Expiry"],
                     errors="coerce"
                 ).date()
 
-                clinic_name = user_row.iloc[0]["clinic name"]
+                clinic_name = user_row.iloc[0]["ClinicName"]
                 today = datetime.date.today()
 
                 if pd.isna(expiry_date):
@@ -109,7 +109,7 @@ if uploaded_file:
                 st.session_state.logged_in = False
                 st.rerun()
 
-        required_reminder_cols = {"phone", "pet name", "owner name", "vaccine type", "due date"}
+        required_reminder_cols = {"Contact No", "Pet Name", "Owner Name", "Description", "Due Date"}
 
         if not required_reminder_cols.issubset(df_reminders.columns):
             st.error("Sheet1 format incorrect.")
@@ -117,12 +117,12 @@ if uploaded_file:
 
         today = datetime.date.today()
 
-        df_reminders["due date"] = pd.to_datetime(
-            df_reminders["due date"],
+        df_reminders["Due Date"] = pd.to_datetime(
+            df_reminders["Due Date"],
             errors="coerce"
         ).dt.date
 
-        df_today = df_reminders[df_reminders["due date"] == today]
+        df_today = df_reminders[df_reminders["Due Date"] == today]
 
         st.subheader("📋 Today's Reminders")
 
@@ -131,13 +131,13 @@ if uploaded_file:
         else:
             for _, row in df_today.iterrows():
 
-                phone = re.sub(r"\D", "", str(row["phone"]))
+                phone = re.sub(r"\D", "", str(row["Contact No"]))
                 if not phone.startswith("91"):
                     phone = "91" + phone
 
-                pet = row["pet name"]
-                owner = row["owner name"]
-                vaccine = row["vaccine type"]
+                pet = row["Pet Name"]
+                owner = row["Owner Name"]
+                vaccine = row["Description"]
 
                 message = f"Hi {owner}, this is a reminder that {pet} is due for a {vaccine} today."
                 encoded_msg = urllib.parse.quote(message)
