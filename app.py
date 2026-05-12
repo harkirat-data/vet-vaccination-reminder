@@ -642,7 +642,8 @@ if uploaded_file:
                 message = (
                     f"Hi {owner}, "
                     f"{pet} is due for "
-                    f"{vaccine} {when_text} 🐾"
+                    f"{vaccine} {when_text}."
+                    f"If you need to reschedule or cancel, please call or text...{st.session_state.clinic_name} 🐾"
                 )
 
                 encoded_msg = urllib.parse.quote(message)
