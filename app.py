@@ -337,7 +337,18 @@ h3{
     color:#1f2937 !important;
     font-family:'Fredoka One', cursive !important;
 }
-
+            
+/* ========================= */
+/* HIDE DEPLOY BUTTON        */
+/* ========================= */
+                     
+[data-testid="stAppDeployButton"],
+[data-testid="stDeployButton"],
+.st-emotion-cache-h4xjwg,
+.st-emotion-cache-1dp5vir {
+    display: none !important;
+}
+            
 </style>
 """, unsafe_allow_html=True)
 
