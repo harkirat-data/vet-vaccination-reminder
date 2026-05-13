@@ -49,6 +49,22 @@ footer{
 }
 
 /* ========================= */
+/* HIDE BOTTOM PROFILE BADGE */
+/* ========================= */
+
+[data-testid="stStatusWidget"],
+[data-testid="stBottomBlockContainer"],
+.stDeployButton,
+._profileContainer_gzau3_53,
+._profilePreview_gzau3_63,
+.viewerBadge_container__r5tak,
+#view-default-override,
+.viewerBadge_link__qRIco{
+    display:none !important;
+    visibility:hidden !important;
+}
+                       
+/* ========================= */
 /* BACKGROUND */
 /* ========================= */
 
